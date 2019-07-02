@@ -1,0 +1,325 @@
+\documentclass[10pt]{beamer}
+
+%% include header:
+\input{./header}
+
+%% include template:
+\input{./templates/metropolis_cert}
+
+
+
+%% kableExtra stuff:
+%% ----------------------------------------
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+
+%% Title:
+%% ----------------------------------------
+
+\title{compboost}
+\subtitle{Fast and Flexible Way of bla}
+\date{\today}
+\author{Daniel Schalk}
+\institute{LMU Munich\\Working Group Computational Statistics}
+
+%% Wrap Shaded around Shunk to have a nices R output:
+%% --------------------------------------------------
+
+\let\Oldkframe\kframe
+\let\endOldkframe\endkframe
+
+\renewenvironment{kframe}
+ {\scriptsize\definecolor{shadecolor}{RGB}{240,240,240}\begin{Shaded}\Oldkframe}
+ {\endOldkframe\end{Shaded}\normalsize}
+
+%% Prevent code from printing over margin:
+%% --------------------------------------------------
+
+<<echo=FALSE>>=
+options(width=60)
+@
+
+%% Content:
+%% ----------------------------------------
+
+\begin{document}
+
+
+
+
+
+
+
+%% SETUP Chunk:
+%% ----------------------------------------
+
+<<include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+  concordance = TRUE
+)
+
+
+library(compboost)
+library(kableExtra)
+
+n_sim = 200
+
+set.seed(314159)
+
+country = sample(x = c("Austria", "Seychelles", "Germany", "Czechia", "Australia", "USA"),
+  size = n_sim, replace = TRUE)
+
+country_biases = c(Austria = 106, Seychelles = 111, Germany = 104, Czechia = 140,
+  Australia = 71, USA = 74)
+
+age = sample(x = 16:70, size = n_sim, replace = TRUE)
+ageFun = function (age) { return ((10 - 0.1 * (age - 16)^2 + 0.002 * (age - 16)^3) / 1) }
+contr_age = ageFun(age)
+
+# plot(age, contr_age)
+
+gender = sample(x = c("m", "f"), size = n_sim, replace = TRUE)
+gender_biases = c(m = 5, f = -2)
+
+beer_consumption = country_biases[country] + gender_biases[gender] + contr_age + rnorm(n = n_sim, mean = 0, sd = 2)
+beer_consumption = ifelse(beer_consumption < 0, 0, beer_consumption)
+
+beer_data = data.frame(
+  beer_consumption = round(beer_consumption / 0.5) * 0.5,
+  # beer_consumption_cups = round(beer_consumption / 0.5),
+  gender = gender,
+  country = country,
+  age = age,
+  weight = runif(n = n_sim, min = 60, max = 120),
+  height = runif(n = n_sim, min = 156, max = 204)
+)
+
+for (i in 1:200) {
+  set.seed(i * 3)
+  beer_data[[paste0("app_usage", i)]] = runif(n = n_sim)
+}
+
+# plot(density(beer_data$beer_consumption))
+@
+
+\maketitle
+
+
+
+\section{Use-Case}
+
+\begin{frame}{Use-Case}
+
+\begin{itemize}
+  \item
+    We own a small booth at the Christmas market that sells mulled wine.
+
+  \item
+    As we are very interested in our customers' health, we only sell to customers who we expect to drink less than 15 liters per season.
+
+  \item
+    To estimate how much a customer drinks, we have collected data from 200 customers in recent years.
+
+  \item
+    These data include mulled wine consumption (in liter and cups), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Use-Case}
+
+<<echo=FALSE>>=
+df_beer = beer_data[1:10, 1:8]
+kable(df_beer, "latex", booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  kable_styling(latex_options = c("striped", "scale_down"))
+@
+
+\end{frame}
+
+
+\begin{frame}{Use-Case}
+
+With these data we want to answer the following questions:
+
+\begin{itemize}
+  \item
+    Which of the customers' characteristics are important to be able to determine the consumption?
+  \item
+    How does the effect of important features look like?
+  \item
+    How does the model behave on unseen data?
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\section{What is Component-Wise Boosting?}
+
+\begin{frame}{The General Idea}
+
+\begin{center}
+\includegraphics[width=\textwidth]{./images/cboost_gif_norisk.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{}
+
+  \begin{itemize}
+
+    \item
+      Inherent (unbiased) feature selection.
+
+    \item
+      Resulting model is sparse since important effects are selected first and therefore it is able to learn in high-dimensional feature spaces ($p \gg n$).
+
+    \item
+      Parameters are updated iteratively. Therefore, the whole trace of how the model evolves is available.
+
+  \end{itemize}
+
+\end{frame}
+
+
+
+
+\section{The Idea Behind Compboost}
+
+\begin{frame}{About Compboost}
+
+
+The \texttt{compboost} package is a fast and flexible framework for model-based boosting completely written in \texttt{C++}:
+
+\begin{itemize}
+
+  \item
+    With \texttt{mboost} as standard, we want to keep the modular principle of defining custom base-learner and losses.
+
+  \item
+    Completely written in \texttt{C++} and exposed by \texttt{Rcpp} to obtain high performance and full memory control.
+
+  \item
+    \texttt{R} API is written in \texttt{R6} to provide convenient wrapper.
+
+  \item
+    Major parts of the \texttt{compboost} functionality are unit tested against \texttt{mboost} to ensure correctness.
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\section{A Short Demonstration}
+
+\begin{frame}[fragile]{Using Convenience Wrapper}
+
+<<warning=FALSE>>=
+set.seed(618)
+cboost = boostSplines(data = beer_data, target = "beer_consumption",
+  loss = LossAbsolute$new(), learning_rate = 0.1, iterations = 5000L,
+  penalty = 10, oob_fraction = 0.3, trace = 2500L)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing Results}
+
+<<fig.width=10, fig.height=5, out.width="\\textwidth">>=
+gg1 = cboost$plotInbagVsOobRisk()
+gg2 = cboost$plotFeatureImportance()
+
+gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Visualizing Results}
+
+<<fig.width=10, fig.height=5, out.width="\\textwidth">>=
+cboost$train(2000L)
+
+gg1 = cboost$plotFeatureImportance()
+gg2 = cboost$plot("age_spline", iters = c(50, 100, 500, 1000, 2000, 4000))
+
+gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
+@
+
+\end{frame}
+
+\begin{frame}{More Advanced Customizations}
+
+\begin{itemize}
+
+  \item
+    Custom loss function and base-learner
+
+  \item
+    Advanced stopper for early stopping (e.g. time or performance based stopping)
+
+  \item
+    Parallelization via openmp is controlled by the optimizer, e.g. \texttt{OptimizerCoordinateDescent\$new(4L)}
+
+\end{itemize}
+
+\end{frame}
+
+
+\section{What's Next?}
+
+\begin{frame}{What's Next?}
+
+\begin{itemize}
+  \item
+    Research on computational aspects of the algorithm:
+    \begin{itemize}
+      \item
+        More stable base-learner selection process via resampling
+      \item
+        Base-learner selection for arbitrary performance measures
+      \item
+        Smarter and faster optimizer to select base-learner
+    \end{itemize}
+  \item
+    Greater functionality:
+    \begin{itemize}
+      \item
+        Functional data structures and loss functions
+      \item
+        Unbiased feature selection
+      \item
+        Effect decomposition into constant, linear, and non-linear
+    \end{itemize}
+    \item
+      Python API
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[plain, standout]
+  Questions?
+\end{frame}
+
+
+\end{document}
