@@ -78,6 +78,16 @@ library(compboost)
 library(kableExtra)
 library(ggplot2)
 
+
+
+transparent_theme = theme(
+  plot.background = element_rect(fill = "transparent", color = NA),
+  legend.background = element_rect(fill = "transparent", color = NA),
+  legend.box.background = element_rect(fill = "transparent", color = NA)
+)
+
+
+
 n_sim = 200
 
 set.seed(314159)
@@ -128,7 +138,7 @@ for (i in 1:200) {
 
 \begin{itemize}
   \item
-    We own a small booth at the city center of Toulouse that sells beer.
+    We own a small booth at the city center that sells beer.
 
   \item
     As we are very interested in our customers' health, we only sell to customers who we expect to drink less than 110 liters per year.
@@ -233,37 +243,46 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \begin{itemize}
 
   \item
-    Special data structures are used to store matrices as sparse matrix or to speed up the algorithm by reducing the number of repetitive calculations.
+    Matrices are stored (if possible) as sparse matrix.
 
   \item
-    Optimizer are parallelized via openmp (figure was made by training 5000 iteration with just spline base-learners):
-    \begin{center}
-    \includegraphics[width=0.7\textwidth]{./images/cboost_runtime.pdf}
-    \end{center}
+    Take advantage of the matrix structure to speed up the algorithm by reducing the number of repetitive or too expensive calculations.
 
-<<echo=FALSE, eval=FALSE>>=
-## Code for figure:
-cores = c(1, 2, 4, 8, 16)
-reps = 10L
-df_res = data.frame(runtime = numeric(length = reps * length(cores)), cores = as.factor(rep(cores, each = reps)))
-for (i in seq_along(cores)) {
-  for (j in seq_len(reps)) {
+  \item
+    Optimizer are parallelized via openmp:
+    % \begin{figure}
+    % \begin{center}
+    % \includegraphics[width=0.7\textwidth]{./images/cboost_runtime.pdf}
+    % \end{center}
+    % \caption{figure was made by training 5000 iteration with just spline base-learners}
+    % \end{figure}
 
-    time = proc.time()
-    temp = boostSplines(data = beer_data, target = "beer_consumption",
-      loss = LossAbsolute$new(), learning_rate = 0.1, iterations = 5000L,
-      penalty = 10, oob_fraction = 0.3, trace = -1, optimizer = OptimizerCoordinateDescent$new(cores[i]))
-    time = proc.time() - time
+<<echo=FALSE, fig.width=5, fig.height=2.5, out.width="0.7\\textwidth", fig.align="center">>=
+# ## Code for figure:
+# cores = c(1, 2, 4, 8, 16)
+# reps = 10L
+# df_res = data.frame(runtime = numeric(length = reps * length(cores)), cores = as.factor(rep(cores, each = reps)))
+# for (i in seq_along(cores)) {
+#   for (j in seq_len(reps)) {
 
-    df_res[j + (i - 1) * reps, 1] = time[3]
-  }
-}
-gg = ggplot(data = df_res, aes(x = cores, y = runtime)) +
+#     time = proc.time()
+#     temp = boostSplines(data = beer_data, target = "beer_consumption",
+#       loss = LossAbsolute$new(), learning_rate = 0.1, iterations = 5000L,
+#       penalty = 10, oob_fraction = 0.3, trace = -1, optimizer = OptimizerCoordinateDescent$new(cores[i]))
+#     time = proc.time() - time
+
+#     df_res[j + (i - 1) * reps, 1] = time[3]
+#   }
+# }
+# save(list = "df_res", file = "images/cboost_runtime.rds")
+
+load("images/cboost_runtime.rds")
+
+ggplot(data = df_res, aes(x = cores, y = runtime)) +
   geom_boxplot(fill = "#E17F00") +
   xlab("Number of Threads") +
-  ylab("Runtime in Sec.")
-
-ggsave(filename = "images/cboost_runtime.pdf", plot = gg, width = 5, height = 2.5)
+  ylab("Runtime in Sec.") +
+  transparent_theme
 @
 
 \end{itemize}
@@ -286,9 +305,16 @@ cboost = boostSplines(data = beer_data, target = "beer_consumption",
 
 \begin{frame}[fragile]{Visualizing Results}
 
-<<fig.width=10, fig.height=5, out.width="\\textwidth">>=
+<<eval=FALSE>>=
 gg1 = cboost$plotInbagVsOobRisk()
 gg2 = cboost$plotFeatureImportance()
+
+gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
+@
+
+<<echo=FALSE, fig.width=10, fig.height=5, out.width="\\textwidth">>=
+gg1 = cboost$plotInbagVsOobRisk() + transparent_theme
+gg2 = cboost$plotFeatureImportance() + transparent_theme
 
 gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
 @
@@ -297,7 +323,7 @@ gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
 
 \begin{frame}[fragile]{Visualizing Results}
 
-<<fig.width=10, fig.height=5, out.width="\\textwidth">>=
+<<eval=FALSE>>=
 cboost$train(2000L)
 
 gg1 = cboost$plotFeatureImportance()
@@ -306,6 +332,33 @@ gg2 = cboost$plot("age_spline", iters = c(50, 100, 500, 1000, 2000, 4000))
 gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
 @
 
+
+<<echo=FALSE, fig.width=10, fig.height=5, out.width="\\textwidth">>=
+cboost$train(2000L)
+
+gg1 = cboost$plotFeatureImportance() + transparent_theme
+gg2 = cboost$plot("age_spline", iters = c(50, 100, 500, 1000, 2000, 4000)) + transparent_theme
+
+gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Using the R6 Interface}
+
+<<>>=
+cboost = Compboost$new(data = beer_data, target = "beer_consumption",
+  loss = LossAbsolute$new(), learning_rate = 0.1, oob_fraction = 0.3,
+  optimizer = OptimizerCoordinateDescent$new(nthreads = 4L))
+
+cboost$addBaselearner("age", "spline", BaselearnerPSpline)
+cboost$addBaselearner("country", "category", BaselearnerPolynomial)
+
+cboost$addLogger(logger = LoggerTime, use_as_stopper = TRUE, logger_id = "time",
+  max_time = 100000, time_unit = "microseconds")
+
+cboost$train(10000, trace = 500)
+@
 
 \end{frame}
 
