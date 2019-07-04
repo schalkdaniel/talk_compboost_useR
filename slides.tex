@@ -119,13 +119,6 @@
 
 \maketitle
 
-% \begin{frame}[plain]{Table of contents}
-% 	\setbeamertemplate{section in toc}[sections numbered]
-% 	\tableofcontents[hideallsubsections]
-% \end{frame}
-
-
-
 
 
 \section{Use-Case}
@@ -134,16 +127,16 @@
 
 \begin{itemize}
   \item
-    We own a small booth at the Christmas market that sells mulled wine.
+    We own a small booth at the city center of Toulouse that sells beer.
 
   \item
-    As we are very interested in our customers' health, we only sell to customers who we expect to drink less than 15 liters per season.
+    As we are very interested in our customers' health, we only sell to customers who we expect to drink less than 110 liters per year.
 
   \item
     To estimate how much a customer drinks, we have collected data from 200 customers in recent years.
 
   \item
-    These data include mulled wine consumption (in liter and cups), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
+    These data include the beer consumption (in liter), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
 \end{itemize}
 
 \end{frame}
@@ -232,7 +225,7 @@ With these data we want to answer the following questions:
 \begin{frame}{About Compboost}
 
 
-The \texttt{compboost} package is a fast and flexible framework for model-based boosting completely written in \texttt{C++}:
+The \texttt{compboost} package is a fast and flexible framework for model-based boosting:
 
 \begin{itemize}
 
@@ -253,6 +246,24 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \end{frame}
 
 
+\begin{frame}{Runtime and Memory Considerations}
+
+\begin{itemize}
+
+  \item
+    Special data structures are used to store matrices as sparse matrix or to speed up the algorithm by reducing the number of repetitive calculations.
+
+  \item
+    Optimizer are parallelized via openmp (figure was made by training 5000 iteration with just spline base-learners):
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{./images/cboost_runtime.pdf}
+    \end{center}
+
+
+
+\end{itemize}
+
+\end{frame}
 
 
 \section{A Short Demonstration}
@@ -273,7 +284,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 ## 5000/5000   risk = 0.44  oob_risk = 8.3   
 ## 
 ## 
-## Train 5000 iterations in 18 Seconds.
+## Train 5000 iterations in 19 Seconds.
 ## Final risk based on the train set: 0.44
 \end{verbatim}
 \end{kframe}
@@ -292,7 +303,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \hlstd{gridExtra}\hlopt{::}\hlkwd{grid.arrange}\hlstd{(gg1, gg2,} \hlkwc{ncol} \hlstd{=} \hlnum{2L}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\textwidth]{figure/unnamed-chunk-5-1} 
+\includegraphics[width=\textwidth]{figure/unnamed-chunk-6-1} 
 
 \end{knitrout}
 
@@ -311,9 +322,10 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \hlstd{gridExtra}\hlopt{::}\hlkwd{grid.arrange}\hlstd{(gg1, gg2,} \hlkwc{ncol} \hlstd{=} \hlnum{2L}\hlstd{)}
 \end{alltt}
 \end{kframe}
-\includegraphics[width=\textwidth]{figure/unnamed-chunk-6-1} 
+\includegraphics[width=\textwidth]{figure/unnamed-chunk-7-1} 
 
 \end{knitrout}
+
 
 \end{frame}
 
@@ -350,6 +362,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
       \item
         Smarter and faster optimizer to select base-learner
     \end{itemize}
+
   \item
     Greater functionality:
     \begin{itemize}
@@ -360,6 +373,10 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
       \item
         Effect decomposition into constant, linear, and non-linear
     \end{itemize}
+
+    \item
+      Reducing the memory load by applying binning to numerical features.
+
     \item
       Python API
 \end{itemize}

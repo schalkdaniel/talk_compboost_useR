@@ -76,6 +76,7 @@ opts_chunk$set(
 
 library(compboost)
 library(kableExtra)
+library(ggplot2)
 
 n_sim = 200
 
@@ -127,16 +128,16 @@ for (i in 1:200) {
 
 \begin{itemize}
   \item
-    We own a small booth at the Christmas market that sells mulled wine.
+    We own a small booth at the city center of Toulouse that sells beer.
 
   \item
-    As we are very interested in our customers' health, we only sell to customers who we expect to drink less than 15 liters per season.
+    As we are very interested in our customers' health, we only sell to customers who we expect to drink less than 110 liters per year.
 
   \item
     To estimate how much a customer drinks, we have collected data from 200 customers in recent years.
 
   \item
-    These data include mulled wine consumption (in liter and cups), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
+    These data include the beer consumption (in liter), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
 \end{itemize}
 
 \end{frame}
@@ -206,7 +207,7 @@ With these data we want to answer the following questions:
 \begin{frame}{About Compboost}
 
 
-The \texttt{compboost} package is a fast and flexible framework for model-based boosting completely written in \texttt{C++}:
+The \texttt{compboost} package is a fast and flexible framework for model-based boosting:
 
 \begin{itemize}
 
@@ -227,6 +228,47 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \end{frame}
 
 
+\begin{frame}{Runtime and Memory Considerations}
+
+\begin{itemize}
+
+  \item
+    Special data structures are used to store matrices as sparse matrix or to speed up the algorithm by reducing the number of repetitive calculations.
+
+  \item
+    Optimizer are parallelized via openmp (figure was made by training 5000 iteration with just spline base-learners):
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{./images/cboost_runtime.pdf}
+    \end{center}
+
+<<echo=FALSE, eval=FALSE>>=
+## Code for figure:
+cores = c(1, 2, 4, 8, 16)
+reps = 10L
+df_res = data.frame(runtime = numeric(length = reps * length(cores)), cores = as.factor(rep(cores, each = reps)))
+for (i in seq_along(cores)) {
+  for (j in seq_len(reps)) {
+
+    time = proc.time()
+    temp = boostSplines(data = beer_data, target = "beer_consumption",
+      loss = LossAbsolute$new(), learning_rate = 0.1, iterations = 5000L,
+      penalty = 10, oob_fraction = 0.3, trace = -1, optimizer = OptimizerCoordinateDescent$new(cores[i]))
+    time = proc.time() - time
+
+    df_res[j + (i - 1) * reps, 1] = time[3]
+  }
+}
+gg = ggplot(data = df_res, aes(x = cores, y = runtime)) +
+  geom_boxplot(fill = "#E17F00") +
+  xlab("Number of Threads") +
+  ylab("Runtime in Sec.")
+
+ggsave(filename = "images/cboost_runtime.pdf", plot = gg, width = 5, height = 2.5)
+@
+
+\end{itemize}
+
+\end{frame}
 
 
 \section{A Short Demonstration}
@@ -264,6 +306,7 @@ gg2 = cboost$plot("age_spline", iters = c(50, 100, 500, 1000, 2000, 4000))
 gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
 @
 
+
 \end{frame}
 
 \begin{frame}{More Advanced Customizations}
@@ -299,6 +342,7 @@ gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
       \item
         Smarter and faster optimizer to select base-learner
     \end{itemize}
+
   \item
     Greater functionality:
     \begin{itemize}
@@ -309,6 +353,10 @@ gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
       \item
         Effect decomposition into constant, linear, and non-linear
     \end{itemize}
+
+    \item
+      Reducing the memory load by applying binning to numerical features.
+
     \item
       Python API
 \end{itemize}
