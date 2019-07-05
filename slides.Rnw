@@ -89,6 +89,7 @@ transparent_theme = theme(
 
 
 n_sim = 200
+n_noise_features = 200L
 
 set.seed(314159)
 
@@ -120,11 +121,12 @@ beer_data = data.frame(
   height = runif(n = n_sim, min = 156, max = 204)
 )
 
-for (i in 1:200) {
+for (i in seq_len(n_noise_features)) {
   set.seed(i * 3)
   beer_data[[paste0("app_usage", i)]] = runif(n = n_sim)
 }
 
+# head(beer_data)
 # plot(density(beer_data$beer_consumption))
 @
 
@@ -250,12 +252,6 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 
   \item
     Optimizer are parallelized via openmp:
-    % \begin{figure}
-    % \begin{center}
-    % \includegraphics[width=0.7\textwidth]{./images/cboost_runtime.pdf}
-    % \end{center}
-    % \caption{figure was made by training 5000 iteration with just spline base-learners}
-    % \end{figure}
 
 <<echo=FALSE, fig.width=5, fig.height=2.5, out.width="0.7\\textwidth", fig.align="center">>=
 # ## Code for figure:
@@ -348,8 +344,7 @@ gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
 
 <<>>=
 cboost = Compboost$new(data = beer_data, target = "beer_consumption",
-  loss = LossAbsolute$new(), learning_rate = 0.1, oob_fraction = 0.3,
-  optimizer = OptimizerCoordinateDescent$new(nthreads = 4L))
+  loss = LossQuantile$new(0.9), learning_rate = 0.1, oob_fraction = 0.3)
 
 cboost$addBaselearner("age", "spline", BaselearnerPSpline)
 cboost$addBaselearner("country", "category", BaselearnerPolynomial)
@@ -362,18 +357,21 @@ cboost$train(10000, trace = 500)
 
 \end{frame}
 
-\begin{frame}{More Advanced Customizations}
+\begin{frame}{Functionality Overview}
 
 \begin{itemize}
 
   \item
-    Custom loss function and base-learner
+    Base-learner
 
   \item
-    Advanced stopper for early stopping (e.g. time or performance based stopping)
+    Loss functions
 
   \item
-    Parallelization via openmp is controlled by the optimizer, e.g. \texttt{OptimizerCoordinateDescent\$new(4L)}
+    Logger/Stopper
+
+  \item
+    Custom loss function and base-learner via \texttt{R} or \texttt{C++} without recompiling the package
 
 \end{itemize}
 
@@ -382,9 +380,9 @@ cboost$train(10000, trace = 500)
 
 \section{What's Next?}
 
-\begin{frame}{What's Next?}
+\begin{frame}
 
-\begin{itemize}
+\begin{itemize}{What's Next?}
   \item
     Research on computational aspects of the algorithm:
     \begin{itemize}
@@ -393,7 +391,7 @@ cboost$train(10000, trace = 500)
       \item
         Base-learner selection for arbitrary performance measures
       \item
-        Smarter and faster optimizer to select base-learner
+        Smarter and faster optimizers
     \end{itemize}
 
   \item
