@@ -258,12 +258,6 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 
   \item
     Optimizer are parallelized via openmp:
-    % \begin{figure}
-    % \begin{center}
-    % \includegraphics[width=0.7\textwidth]{./images/cboost_runtime.pdf}
-    % \end{center}
-    % \caption{figure was made by training 5000 iteration with just spline base-learners}
-    % \end{figure}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
@@ -299,7 +293,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 ## 5000/5000   risk = 0.44  oob_risk = 8.3   
 ## 
 ## 
-## Train 5000 iterations in 18 Seconds.
+## Train 5000 iterations in 186 Seconds.
 ## Final risk based on the train set: 0.44
 \end{verbatim}
 \end{kframe}
@@ -364,18 +358,22 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \hlstd{cboost}\hlopt{$}\hlkwd{addBaselearner}\hlstd{(}\hlstr{"country"}\hlstd{,} \hlstr{"category"}\hlstd{, BaselearnerPolynomial)}
 
 \hlstd{cboost}\hlopt{$}\hlkwd{addLogger}\hlstd{(}\hlkwc{logger} \hlstd{= LoggerTime,} \hlkwc{use_as_stopper} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{logger_id} \hlstd{=} \hlstr{"time"}\hlstd{,}
-  \hlkwc{max_time} \hlstd{=} \hlnum{100000}\hlstd{,} \hlkwc{time_unit} \hlstd{=} \hlstr{"microseconds"}\hlstd{)}
+  \hlkwc{max_time} \hlstd{=} \hlnum{2L}\hlstd{,} \hlkwc{time_unit} \hlstd{=} \hlstr{"seconds"}\hlstd{)}
 
 \hlstd{cboost}\hlopt{$}\hlkwd{train}\hlstd{(}\hlnum{10000}\hlstd{,} \hlkwc{trace} \hlstd{=} \hlnum{500}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-##     1/10000   risk = 11  oob_risk = 10   time = 1   
-##   500/10000   risk = 7.9  oob_risk = 8.2   time = 28144   
-##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 61596   
+##     1/10000   risk = 11  oob_risk = 10   time = 0   
+##   500/10000   risk = 7.9  oob_risk = 8.2   time = 0   
+##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 0   
+##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 0   
+##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 1   
+##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 1   
+##  3000/10000   risk = 3.2  oob_risk = 3.5   time = 1   
 ## 
 ## 
-## Train 1457 iterations in 0 Seconds.
-## Final risk based on the train set: 5.2
+## Train 3157 iterations in 2 Seconds.
+## Final risk based on the train set: 3
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -405,7 +403,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 
 \section{What's Next?}
 
-\begin{frame}
+\begin{frame}{What's Next?}
 
 \begin{itemize}
   \item

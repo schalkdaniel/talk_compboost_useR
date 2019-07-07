@@ -350,7 +350,7 @@ cboost$addBaselearner("age", "spline", BaselearnerPSpline)
 cboost$addBaselearner("country", "category", BaselearnerPolynomial)
 
 cboost$addLogger(logger = LoggerTime, use_as_stopper = TRUE, logger_id = "time",
-  max_time = 100000, time_unit = "microseconds")
+  max_time = 2L, time_unit = "seconds")
 
 cboost$train(10000, trace = 500)
 @
@@ -380,9 +380,9 @@ cboost$train(10000, trace = 500)
 
 \section{What's Next?}
 
-\begin{frame}
+\begin{frame}{What's Next?}
 
-\begin{itemize}{What's Next?}
+\begin{itemize}
   \item
     Research on computational aspects of the algorithm:
     \begin{itemize}
