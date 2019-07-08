@@ -207,10 +207,13 @@ With these data we want to answer the following questions:
 \begin{itemize}
 
   \item
-    Sequential refitting of the base-learner $b_1, b_2, b_3$ on the error of the current ensemble.
+    Sequential fitting of the base-learner $b_1, b_2, b_3$ on the error / pseudo-residuals of the current ensemble.
 
   \item
     The base-learner with the best fit on the error (measured as mean squared error) is added to the ensemble.
+
+  \item
+    Results in a weighted sum / additive model over base-learners.
 
 \end{itemize}
 
@@ -227,7 +230,22 @@ With these data we want to answer the following questions:
       Resulting model is sparse since important effects are selected first and therefore it is able to learn in high-dimensional feature spaces ($p \gg n$).
 
     \item
-      Parameters are updated iteratively. Therefore, the whole trace of how the model evolves is available.
+      Parameters are updated iteratively. Therefore, the whole trace of how the model evolves is available. \vspace{0.3cm}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=0.7\textwidth]{figure/unnamed-chunk-5-1} 
+
+}
+
+
+
+\end{knitrout}
+
+
 
   \end{itemize}
 
@@ -322,7 +340,7 @@ Fast and flexible framework for model-based boosting:
 ## 5000/5000   risk = 0.44  oob_risk = 8.3   
 ## 
 ## 
-## Train 5000 iterations in 13 Seconds.
+## Train 5000 iterations in 14 Seconds.
 ## Final risk based on the train set: 0.44
 \end{verbatim}
 \end{kframe}
@@ -343,7 +361,7 @@ Fast and flexible framework for model-based boosting:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{figure/unnamed-chunk-6-1} 
+\includegraphics[width=\textwidth]{figure/unnamed-chunk-8-1} 
 
 \end{knitrout}
 
@@ -365,7 +383,7 @@ Fast and flexible framework for model-based boosting:
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\textwidth]{figure/unnamed-chunk-8-1} 
+\includegraphics[width=\textwidth]{figure/unnamed-chunk-10-1} 
 
 \end{knitrout}
 
@@ -389,15 +407,15 @@ Fast and flexible framework for model-based boosting:
 \end{alltt}
 \begin{verbatim}
 ##     1/10000   risk = 11  oob_risk = 10   time = 0   
-##   500/10000   risk = 7.9  oob_risk = 8.2   time = 18930   
-##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 46725   
-##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 94017   
-##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 134416   
-##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 179140   
+##   500/10000   risk = 7.9  oob_risk = 8.2   time = 24814   
+##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 59315   
+##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 93836   
+##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 135410   
+##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 182900   
 ## 
 ## 
-## Train 2721 iterations in 0 Seconds.
-## Final risk based on the train set: 3.3
+## Train 2666 iterations in 0 Seconds.
+## Final risk based on the train set: 3.4
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -410,17 +428,16 @@ Fast and flexible framework for model-based boosting:
 
   \item
     \textbf{Base-learner:} \texttt{BaselearnerPolynomial}, \texttt{BaselearnerSpline}, \texttt{BaselearnerCustom}, and \texttt{BaselearnerCustomCpp}
-    % \begin{itemize}
-    %   \item Polynomial base-learner
-    %   \item Spline base-learner
-    %   \item Custom \texttt{R} or \texttt{C++} base-learner
-    % \end{itemize}
 
   \item
     \textbf{Loss functions:} \texttt{LossQuadratic}, \texttt{LossAbsolute}, \texttt{LossQuantile}, \texttt{LossHuber}, \texttt{LossBinomial}, \texttt{LossCustom}, and \texttt{LossCustomCpp}
 
   \item
-    \textbf{Logger/Stopper:} \texttt{LoggerIteration}, \texttt{LoggerInbagRisk}, \texttt{LoggerOobRisk}, and \texttt{LoggerTime}
+    \textbf{Logger/Stopper:} \texttt{LoggerIteration}, \texttt{LoggerInbagRisk}, \texttt{LoggerOobRisk}, and \texttt{LoggerTime} \\
+    \begin{itemize}
+      \item[$\rightarrow$]
+        Performance-based early stopping can be applied using the \texttt{LoggerOobRisk} and specifying the relative improvement that should be reached (e.g. 0 for stopping when out of bag risk starts to decrease).
+    \end{itemize}
 
 \end{itemize}
 
@@ -439,7 +456,7 @@ Fast and flexible framework for model-based boosting:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 
-{\centering \includegraphics[width=0.7\textwidth]{figure/unnamed-chunk-10-1} 
+{\centering \includegraphics[width=0.7\textwidth]{figure/unnamed-chunk-12-1} 
 
 }
 
@@ -539,6 +556,9 @@ Fast and flexible framework for model-based boosting:
 
     \item
       Reducing the memory load by applying binning on numerical features.
+
+    \item
+      Adding hyperparameter tuning by providing a \texttt{mlr} (\texttt{mlr3}) learner API.
 
     \item
       Exposing \texttt{C++} classes to python.
