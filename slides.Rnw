@@ -37,7 +37,7 @@
 \subtitle{Fast and Flexible Component-Wise Boosting Framework}
 % \date{\today}
 \date{July 12, 2019}
-\author{Daniel Schalk}
+\author{\textbf{Daniel Schalk}, Janek Thomas, and Bernd Bischl}
 \institute{LMU Munich\\Working Group Computational Statistics}
 
 %% Wrap Shaded around Shunk to have a nices R output:
@@ -81,6 +81,7 @@ opts_chunk$set(
 library(compboost)
 library(kableExtra)
 library(ggplot2)
+library(dplyr)
 
 
 
@@ -195,8 +196,20 @@ With these data we want to answer the following questions:
 \begin{frame}{General Idea}
 
 \begin{center}
-\includegraphics[width=\textwidth]{./images/cboost_gif_norisk.png}
+\includegraphics[width=0.8\textwidth]{./images/cboost_gif_norisk.png}
 \end{center}
+
+\vspace{-1cm}
+
+\begin{itemize}
+
+  \item
+    Sequential refitting of the base-learner $b_1, b_2, b_3$ on the error of the current ensemble.
+
+  \item
+    The base-learner with the best fit on the error (measured as mean squared error) is added to the ensemble.
+
+\end{itemize}
 
 \end{frame}
 
@@ -222,10 +235,49 @@ With these data we want to answer the following questions:
 
 \section{About Compboost}
 
+\begin{frame}{Current Standard}
+
+Most popular package for model-based boosting is \texttt{mboost}:
+
+\begin{itemize}
+
+  \item
+    Large number of available base-learner and losses.
+
+  \item
+    Extended to more complex problems:
+    \begin{itemize}
+      \item Functional data
+      \item GAMLSS models
+      \item Survival analysis
+    \end{itemize}
+  \item
+    Extendible with custom base-learner and losses.
+
+\end{itemize}
+
+\textbf{So, why another boosting implementation?}
+
+\begin{itemize}
+
+  \item
+    Main parts of \texttt{mboost} are written in \texttt{R} and gets slow for large datasets.
+
+  \item
+    Complex implementation:
+    \begin{itemize}
+      \item Nested scopes
+      \item Mixture of different \texttt{R} class systems
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
 \begin{frame}{About Compboost}
 
 
-The \texttt{compboost} package is a fast and flexible framework for model-based boosting:
+Fast and flexible framework for model-based boosting:
 
 \begin{itemize}
 
@@ -247,7 +299,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 
 
 
-\section{A Small Demonstration}
+\section{Small Demonstration}
 
 \begin{frame}[fragile]{Starting With Convenience Wrapper}
 
@@ -369,11 +421,13 @@ cboost$train(10000, trace = 500)
 
 load("images/cboost_runtime.rds")
 
-ggplot(data = df_res, aes(x = cores, y = runtime)) +
-  geom_boxplot(fill = "#E17F00") +
-  xlab("Number of Threads") +
-  ylab("Runtime in Sec.") +
-  transparent_theme
+df_res %>%
+  mutate(runtime_relative = median(df_res[df_res$cores == 1, "runtime"]) / runtime) %>%
+  ggplot(aes(x = cores, y = runtime_relative)) +
+    geom_boxplot(fill = "#E17F00") +
+    xlab("Number of Threads") +
+    ylab("Relative Runtime\n(compared to one thread)") +
+    transparent_theme
 @
 
   \item
@@ -476,12 +530,6 @@ ggplot(data = df_res, aes(x = cores, y = runtime)) +
 \end{frame}
 
 \addtocounter{framenumber}{-1}
-
-\begin{frame}[plain, standout]
-  Thanks for your attention!
-
-  Questions?
-\end{frame}
 
 \begin{frame}[plain]
 

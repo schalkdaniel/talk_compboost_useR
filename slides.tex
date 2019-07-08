@@ -87,7 +87,7 @@
 \subtitle{Fast and Flexible Component-Wise Boosting Framework}
 % \date{\today}
 \date{July 12, 2019}
-\author{Daniel Schalk}
+\author{\textbf{Daniel Schalk}, Janek Thomas, and Bernd Bischl}
 \institute{LMU Munich\\Working Group Computational Statistics}
 
 %% Wrap Shaded around Shunk to have a nices R output:
@@ -199,8 +199,20 @@ With these data we want to answer the following questions:
 \begin{frame}{General Idea}
 
 \begin{center}
-\includegraphics[width=\textwidth]{./images/cboost_gif_norisk.png}
+\includegraphics[width=0.8\textwidth]{./images/cboost_gif_norisk.png}
 \end{center}
+
+\vspace{-1cm}
+
+\begin{itemize}
+
+  \item
+    Sequential refitting of the base-learner $b_1, b_2, b_3$ on the error of the current ensemble.
+
+  \item
+    The base-learner with the best fit on the error (measured as mean squared error) is added to the ensemble.
+
+\end{itemize}
 
 \end{frame}
 
@@ -226,10 +238,49 @@ With these data we want to answer the following questions:
 
 \section{About Compboost}
 
+\begin{frame}{Current Standard}
+
+Most popular package for model-based boosting is \texttt{mboost}:
+
+\begin{itemize}
+
+  \item
+    Large number of available base-learner and losses.
+
+  \item
+    Extended to more complex problems:
+    \begin{itemize}
+      \item Functional data
+      \item GAMLSS models
+      \item Survival analysis
+    \end{itemize}
+  \item
+    Extendible with custom base-learner and losses.
+
+\end{itemize}
+
+\textbf{So, why another boosting implementation?}
+
+\begin{itemize}
+
+  \item
+    Main parts of \texttt{mboost} are written in \texttt{R} and gets slow for large datasets.
+
+  \item
+    Complex implementation:
+    \begin{itemize}
+      \item Nested scopes
+      \item Mixture of different \texttt{R} class systems
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
 \begin{frame}{About Compboost}
 
 
-The \texttt{compboost} package is a fast and flexible framework for model-based boosting:
+Fast and flexible framework for model-based boosting:
 
 \begin{itemize}
 
@@ -251,7 +302,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 
 
 
-\section{A Small Demonstration}
+\section{Small Demonstration}
 
 \begin{frame}[fragile]{Starting With Convenience Wrapper}
 
@@ -271,7 +322,7 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 ## 5000/5000   risk = 0.44  oob_risk = 8.3   
 ## 
 ## 
-## Train 5000 iterations in 14 Seconds.
+## Train 5000 iterations in 13 Seconds.
 ## Final risk based on the train set: 0.44
 \end{verbatim}
 \end{kframe}
@@ -338,15 +389,15 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \end{alltt}
 \begin{verbatim}
 ##     1/10000   risk = 11  oob_risk = 10   time = 0   
-##   500/10000   risk = 7.9  oob_risk = 8.2   time = 21216   
-##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 44665   
-##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 74519   
-##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 111910   
-##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 155150   
+##   500/10000   risk = 7.9  oob_risk = 8.2   time = 18930   
+##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 46725   
+##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 94017   
+##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 134416   
+##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 179140   
 ## 
 ## 
-## Train 2964 iterations in 0 Seconds.
-## Final risk based on the train set: 3.2
+## Train 2721 iterations in 0 Seconds.
+## Final risk based on the train set: 3.3
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -496,12 +547,6 @@ The \texttt{compboost} package is a fast and flexible framework for model-based 
 \end{frame}
 
 \addtocounter{framenumber}{-1}
-
-\begin{frame}[plain, standout]
-  Thanks for your attention!
-
-  Questions?
-\end{frame}
 
 \begin{frame}[plain]
 
