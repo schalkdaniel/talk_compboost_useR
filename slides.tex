@@ -340,7 +340,7 @@ Fast and flexible framework for model-based boosting:
 ## 5000/5000   risk = 0.44  oob_risk = 8.3   
 ## 
 ## 
-## Train 5000 iterations in 13 Seconds.
+## Train 5000 iterations in 12 Seconds.
 ## Final risk based on the train set: 0.44
 \end{verbatim}
 \end{kframe}
@@ -407,15 +407,14 @@ Fast and flexible framework for model-based boosting:
 \end{alltt}
 \begin{verbatim}
 ##     1/10000   risk = 11  oob_risk = 10   time = 0   
-##   500/10000   risk = 7.9  oob_risk = 8.2   time = 18024   
-##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 40669   
-##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 71985   
-##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 109757   
-##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 152189   
-##  3000/10000   risk = 3.2  oob_risk = 3.5   time = 199319   
+##   500/10000   risk = 7.9  oob_risk = 8.2   time = 20162   
+##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 43488   
+##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 73143   
+##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 117189   
+##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 160851   
 ## 
 ## 
-## Train 3007 iterations in 0 Seconds.
+## Train 2905 iterations in 0 Seconds.
 ## Final risk based on the train set: 3.2
 \end{verbatim}
 \end{kframe}
@@ -437,7 +436,7 @@ Fast and flexible framework for model-based boosting:
     \textbf{Logger/Stopper:} \texttt{LoggerIteration}, \texttt{LoggerInbagRisk}, \texttt{LoggerOobRisk}, and \texttt{LoggerTime} \\
     \begin{itemize}
       \item[$\rightarrow$]
-        Performance-based early stopping can be applied using the \texttt{LoggerOobRisk} and specifying the relative improvement that should be reached (e.g. 0 for stopping when out of bag risk starts to decrease).
+        Performance-based early stopping can be applied using the \texttt{LoggerOobRisk} and specifying the relative improvement that should be reached (e.g. 0 for stopping when out of bag risk starts to increase).
     \end{itemize}
 
 \end{itemize}
@@ -480,7 +479,7 @@ Fast and flexible framework for model-based boosting:
 \begin{itemize}
 
   \item
-    Runtime (numbers are given in minutes):\vspace{-0.3cm}
+    Runtime (in minutes):\vspace{-0.3cm}
     \begin{table}[H]
     \centering
     \resizebox{\linewidth}{!}{
@@ -494,7 +493,7 @@ Fast and flexible framework for model-based boosting:
     \end{table}
 
   \item
-    Memory (numbers are given in GB):\vspace{-0.3cm}
+    Memory (in GB):\vspace{-0.3cm}
     \begin{table}[H]
     \centering
     \resizebox{\linewidth}{!}{
@@ -567,31 +566,39 @@ Fast and flexible framework for model-based boosting:
 
 \end{frame}
 
-\addtocounter{framenumber}{-1}
+% \addtocounter{framenumber}{-1}
 
-\begin{frame}[plain]
+\begin{frame}
 
 \begin{itemize}
 
   \item
-    Actively developed on GitHub:
+    Slides are available at:
+    \vspace{0.2cm}
+    \begin{center}
+      \url{www.github.com/schalkdaniel/compboost_talk_useR}
+    \end{center}
     \vspace{0.3cm}
+
+  \item
+    Actively developed on GitHub:
+    \vspace{0.2cm}
     \begin{center}
       \url{www.github.com/schalkdaniel/compboost}
     \end{center}
-    \vspace{0.5cm}
+    \vspace{0.3cm}
 
   \item
     Project page:
-    \vspace{0.3cm}
+    \vspace{0.2cm}
     \begin{center}
       \url{www.compboost.org}
     \end{center}
-    \vspace{0.5cm}
+    \vspace{0.3cm}
 
   \item
     JOSS DOI:
-    \vspace{0.3cm}
+    \vspace{0.2cm}
     \begin{center}
       \href{https://joss.theoj.org/papers/94cfdbbfdfc8796c5bdb1a74ee59fcda}{\textcolor{metropolis_orange}{10.21105/joss.00967}}
     \end{center}

@@ -431,7 +431,7 @@ cboost$train(10000, trace = 500)
     \textbf{Logger/Stopper:} \texttt{LoggerIteration}, \texttt{LoggerInbagRisk}, \texttt{LoggerOobRisk}, and \texttt{LoggerTime} \\
     \begin{itemize}
       \item[$\rightarrow$]
-        Performance-based early stopping can be applied using the \texttt{LoggerOobRisk} and specifying the relative improvement that should be reached (e.g. 0 for stopping when out of bag risk starts to decrease).
+        Performance-based early stopping can be applied using the \texttt{LoggerOobRisk} and specifying the relative improvement that should be reached (e.g. 0 for stopping when out of bag risk starts to increase).
     \end{itemize}
 
 \end{itemize}
@@ -493,7 +493,7 @@ df_res %>%
 \begin{itemize}
 
   \item
-    Runtime (numbers are given in minutes):\vspace{-0.3cm}
+    Runtime (in minutes):\vspace{-0.3cm}
     \begin{table}[H]
     \centering
     \resizebox{\linewidth}{!}{
@@ -507,7 +507,7 @@ df_res %>%
     \end{table}
 
   \item
-    Memory (numbers are given in GB):\vspace{-0.3cm}
+    Memory (in GB):\vspace{-0.3cm}
     \begin{table}[H]
     \centering
     \resizebox{\linewidth}{!}{
@@ -580,31 +580,39 @@ df_res %>%
 
 \end{frame}
 
-\addtocounter{framenumber}{-1}
+% \addtocounter{framenumber}{-1}
 
-\begin{frame}[plain]
+\begin{frame}
 
 \begin{itemize}
 
   \item
-    Actively developed on GitHub:
+    Slides are available at:
+    \vspace{0.2cm}
+    \begin{center}
+      \url{www.github.com/schalkdaniel/compboost_talk_useR}
+    \end{center}
     \vspace{0.3cm}
+
+  \item
+    Actively developed on GitHub:
+    \vspace{0.2cm}
     \begin{center}
       \url{www.github.com/schalkdaniel/compboost}
     \end{center}
-    \vspace{0.5cm}
+    \vspace{0.3cm}
 
   \item
     Project page:
-    \vspace{0.3cm}
+    \vspace{0.2cm}
     \begin{center}
       \url{www.compboost.org}
     \end{center}
-    \vspace{0.5cm}
+    \vspace{0.3cm}
 
   \item
     JOSS DOI:
-    \vspace{0.3cm}
+    \vspace{0.2cm}
     \begin{center}
       \href{https://joss.theoj.org/papers/94cfdbbfdfc8796c5bdb1a74ee59fcda}{\textcolor{metropolis_orange}{10.21105/joss.00967}}
     \end{center}
