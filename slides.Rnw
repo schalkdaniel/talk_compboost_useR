@@ -82,15 +82,18 @@ library(compboost)
 library(kableExtra)
 library(ggplot2)
 library(dplyr)
+library(ggpubr)
 
 
 
-transparent_theme = theme(
-  plot.background = element_rect(fill = "transparent", color = NA),
-  legend.background = element_rect(fill = "transparent", color = NA),
-  legend.box.background = element_rect(fill = "transparent", color = NA)
-)
 
+
+slide_theme = theme_pubr(base_size = 14, legend = "right") +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    legend.background = element_rect(fill = "transparent", color = NA),
+    legend.box.background = element_rect(fill = "transparent", color = NA)
+  )
 
 
 n_sim = 200
@@ -229,6 +232,12 @@ With these data we want to answer the following questions:
     \item
       Parameters are updated iteratively. Therefore, the whole trace of how the model evolves is available. \vspace{0.3cm}
 
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Base-Learner Paths}
+
 <<echo=FALSE, results="hide", messages=FALSE, warnings=FALSE>>=
 set.seed(618)
 cboost = boostSplines(data = beer_data, target = "beer_consumption",
@@ -257,7 +266,7 @@ df_plot_nottop = df_plot %>%
   filter(! blearner %in% top_labs)
 @
 
-<<echo=FALSE, fig.width=7.7, fig.height=3.75, out.width="0.7\\textwidth", fig.align="center">>=
+<<echo=FALSE, fig.width=7.7, fig.height=3.75, out.width="\\textwidth", fig.align="center">>=
 library(ggrepel)
 
 ggplot() +
@@ -270,16 +279,10 @@ ggplot() +
   ylab("Relative Frequency \nof Included Base-Learner") +
   scale_fill_discrete(name = paste0("Top ", n_legend, " Base-Learner")) +
   guides(color = FALSE) +
-  transparent_theme
+  slide_theme
 @
 
-
-
-  \end{itemize}
-
 \end{frame}
-
-
 
 
 \section{About Compboost}
@@ -371,8 +374,8 @@ gg2 = cboost$plotFeatureImportance()
 @
 
 <<echo=FALSE, fig.width=10, fig.height=5, out.width="\\textwidth">>=
-gg1 = cboost$plotInbagVsOobRisk() + transparent_theme
-gg2 = cboost$plotFeatureImportance() + transparent_theme
+gg1 = cboost$plotInbagVsOobRisk() + slide_theme
+gg2 = cboost$plotFeatureImportance() + slide_theme
 
 gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
 @
@@ -392,8 +395,8 @@ gg2 = cboost$plot("age_spline", iters = c(50, 100, 500, 1000, 2000, 4000))
 <<echo=FALSE, fig.width=10, fig.height=5, out.width="\\textwidth">>=
 cboost$train(2000L)
 
-gg1 = cboost$plotFeatureImportance() + transparent_theme
-gg2 = cboost$plot("age_spline", iters = c(50, 100, 500, 1000, 2000, 4000)) + transparent_theme
+gg1 = cboost$plotFeatureImportance() + slide_theme
+gg2 = cboost$plot("age_spline", iters = c(50, 100, 500, 1000, 2000, 4000)) + slide_theme
 
 gridExtra::grid.arrange(gg1, gg2, ncol = 2L)
 @
@@ -590,7 +593,7 @@ df_res %>%
     Slides are available at:
     \vspace{0.2cm}
     \begin{center}
-      \url{www.github.com/schalkdaniel/compboost_talk_useR}
+      \url{www.github.com/schalkdaniel/talk_compboost_useR}
     \end{center}
     \vspace{0.3cm}
 
