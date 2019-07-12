@@ -157,7 +157,7 @@ for (i in seq_len(n_noise_features)) {
     To estimate how much a customer drinks, we have collected data from 200 customers in recent years.
 
   \item
-    These data include the beer consumption (in liter), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
+    The data includes the beer consumption (in liter), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
 \end{itemize}
 
 \end{frame}
@@ -178,7 +178,7 @@ kable(df_beer, "latex", booktabs = TRUE) %>%
 
 \begin{frame}{Our Goals}
 
-With these data we want to answer the following questions:
+With this data we want to answer the following questions:
 
 \begin{itemize}
   \item
@@ -355,7 +355,7 @@ Fast and flexible framework for model-based boosting:
 
 \begin{frame}[fragile]{Starting With Convenience Wrapper}
 
-\texttt{boostLinear()} and \texttt{boostSplines()} automatically adds univariate linear models or a GAM for all features.
+\texttt{boostLinear()} and \texttt{boostSplines()} automatically add univariate linear models or a GAM for all features.
 
 <<warning=FALSE>>=
 set.seed(618)
@@ -478,7 +478,7 @@ df_res %>%
     geom_boxplot(fill = "#E17F00") +
     xlab("Number of Threads") +
     ylab("Speedup\n(compared to one thread)") +
-    transparent_theme
+    slide_theme
 @
 
   \item
@@ -525,7 +525,7 @@ df_res %>%
 
 \end{itemize}
 
-(Comparison was made by just using spline base-learner with 20 knots and and 5000 iterations. The numbers in the brackets are the relative values compared to \texttt{mboost}.)
+(Comparison was made by just using spline base-learner with 20 knots and 5000 iterations. The numbers in the brackets are the relative values compared to \texttt{mboost}.)
 
 
 % \begin{table}[H]

@@ -140,7 +140,7 @@
     To estimate how much a customer drinks, we have collected data from 200 customers in recent years.
 
   \item
-    These data include the beer consumption (in liter), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
+    The data includes the beer consumption (in liter), age, sex, country of origin, weight, body size, and 200 characteristics gained from app usage (that have absolutely no influence).
 \end{itemize}
 
 \end{frame}
@@ -178,7 +178,7 @@
 
 \begin{frame}{Our Goals}
 
-With these data we want to answer the following questions:
+With this data we want to answer the following questions:
 
 \begin{itemize}
   \item
@@ -324,7 +324,7 @@ Fast and flexible framework for model-based boosting:
 
 \begin{frame}[fragile]{Starting With Convenience Wrapper}
 
-\texttt{boostLinear()} and \texttt{boostSplines()} automatically adds univariate linear models or a GAM for all features.
+\texttt{boostLinear()} and \texttt{boostSplines()} automatically add univariate linear models or a GAM for all features.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -340,7 +340,7 @@ Fast and flexible framework for model-based boosting:
 ## 5000/5000   risk = 0.44  oob_risk = 8.3   
 ## 
 ## 
-## Train 5000 iterations in 13 Seconds.
+## Train 5000 iterations in 11 Seconds.
 ## Final risk based on the train set: 0.44
 \end{verbatim}
 \end{kframe}
@@ -407,15 +407,15 @@ Fast and flexible framework for model-based boosting:
 \end{alltt}
 \begin{verbatim}
 ##     1/10000   risk = 11  oob_risk = 10   time = 0   
-##   500/10000   risk = 7.9  oob_risk = 8.2   time = 22399   
-##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 47686   
-##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 79563   
-##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 121925   
-##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 168166   
+##   500/10000   risk = 7.9  oob_risk = 8.2   time = 22107   
+##  1000/10000   risk = 6.3  oob_risk = 6.6   time = 46764   
+##  1500/10000   risk = 5.1  oob_risk = 5.4   time = 76091   
+##  2000/10000   risk = 4.2  oob_risk = 4.5   time = 112149   
+##  2500/10000   risk = 3.5  oob_risk = 3.8   time = 154647   
 ## 
 ## 
-## Train 2796 iterations in 0 Seconds.
-## Final risk based on the train set: 3.3
+## Train 2978 iterations in 0 Seconds.
+## Final risk based on the train set: 3.2
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -508,7 +508,7 @@ Fast and flexible framework for model-based boosting:
 
 \end{itemize}
 
-(Comparison was made by just using spline base-learner with 20 knots and and 5000 iterations. The numbers in the brackets are the relative values compared to \texttt{mboost}.)
+(Comparison was made by just using spline base-learner with 20 knots and 5000 iterations. The numbers in the brackets are the relative values compared to \texttt{mboost}.)
 
 
 % \begin{table}[H]
